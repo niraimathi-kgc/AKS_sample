@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-app
+spec:
+  selector:
+    matchLabels:
+      app: sample-app
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: sample-app
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: sample-app
+          image: uttopcacr.azurecr.io/opc_server:latest
+          resources:
+            requests:
+              memory: "3Gi"
+              cpu: "100m"
+            limits:
+              memory: "3Gi"
+              cpu: "100m"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: HELLO_WORLD
+              value: test
+          livenessProbe:
+            exec:
+              command:
+              - bash
+              - /liveness.sh
+            initialDelaySeconds: 60
+            periodSeconds: 1
+            successThreshold: 1
+            failureThreshold: 1
+          volumeMounts:
+            - name: sample-temp
+              mountPath: "/temp/"
+            - name: sample-counter
+              mountPath: "/mnt/"
+
+      volumes:
+        - name: sample-temp
+          persistentVolumeClaim:
+            claimName: sample-disk-pvc
+        - name: sample-counter
+          persistentVolumeClaim:
+            claimName: sample-counter-pvc

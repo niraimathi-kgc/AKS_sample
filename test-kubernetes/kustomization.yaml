@@ -1,0 +1,7 @@
+resources:
+    - ./sample-sc.yaml
+    - ./sample-vol.yaml
+    - ./sample.yaml
+    - ./sample-config.yaml
+    - ./sample-service.yaml
+
